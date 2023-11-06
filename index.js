@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 require('dotenv').config()
 const port = process.env.PORT || 5000;
@@ -33,9 +33,18 @@ async function run() {
     await client.connect();
     const servicesCollection = client.db('careerDB').collection('career');
 
+    // services section
     app.get('/services',async(req,res)=>{
         const result = await servicesCollection.find().toArray()
         res.send(result)
+    })
+
+    // single services data
+    app.get('/services/:id', async(req,res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await servicesCollection.findOne(query);
+      res.send(result)
     })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
