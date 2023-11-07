@@ -33,6 +33,7 @@ async function run() {
     await client.connect();
     const servicesCollection = client.db('careerDB').collection('career');
     const addServiceCollection = client.db('addServiceDB').collection('addService')
+    const bookedCollection = client.db('bookedDB').collection('booked')
     // services section
     app.get('/services',async(req,res)=>{
         const result = await servicesCollection.find().toArray()
@@ -68,6 +69,14 @@ async function run() {
       res.send(result)
     })
 
+    // delete specific data
+    app.delete('/userService/:id',async(req,res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result= await addServiceCollection.deleteOne(query)
+      res.send(result)
+    })
+
     // update services
     app.put('/userService/:id',async(req,res) => {
       const id = req.params.id;
@@ -88,6 +97,14 @@ async function run() {
       const result = await addServiceCollection.updateOne(filter,updateService,options)
       res.send(result)
     })
+
+    // booked collection
+    app.post('/booking',async(req,res) => {
+      const data = req.body;
+      const result = await bookedCollection.insertOne(data)
+      res.send(result)
+    })
+    
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
