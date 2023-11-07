@@ -32,7 +32,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const servicesCollection = client.db('careerDB').collection('career');
-
+    const addServiceCollection = client.db('addServiceDB').collection('addService')
     // services section
     app.get('/services',async(req,res)=>{
         const result = await servicesCollection.find().toArray()
@@ -44,6 +44,13 @@ async function run() {
       const id = req.params.id;
       const query = {_id : new ObjectId(id)}
       const result = await servicesCollection.findOne(query);
+      res.send(result)
+    })
+
+    // add services
+    app.post('/users', async(req,res) => {
+      const user = req.body;
+      const result = await addServiceCollection.insertOne(user)
       res.send(result)
     })
     // Send a ping to confirm a successful connection
