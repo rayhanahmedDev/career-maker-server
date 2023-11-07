@@ -104,7 +104,13 @@ async function run() {
       const result = await bookedCollection.insertOne(data)
       res.send(result)
     })
-    
+
+    // get the booking data
+    app.get('/bookings', async(req,res) => {
+      const result = await bookedCollection.find().toArray()
+      res.send(result)
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
