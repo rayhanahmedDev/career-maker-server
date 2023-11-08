@@ -111,6 +111,30 @@ async function run() {
       res.send(result)
     })
 
+    // get specific bookings data
+    app.get('/bookings/:id', async(req,res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await bookedCollection.findOne(query)
+      res.send(result)
+    })
+
+    // update specific booking status
+    app.patch('/bookings/:id', async(req,res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const update = req.body;
+      console.log(update);
+      const updatedUSer = {
+        $set: {
+          status : update.status,
+        },
+      };
+      const result = await bookedCollection.updateOne(query,updatedUSer)
+      res.send(result)
+
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
